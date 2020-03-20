@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdnPvrFiletype", "PvrFiletype\PdnPvrFiletype.csproj", "{94439CAC-B626-496A-BD89-40875C77A548}"
+	ProjectSection(ProjectDependencies) = postProject
+		{68CA6FDA-E029-4247-9229-C3A75DFA9F8D} = {68CA6FDA-E029-4247-9229-C3A75DFA9F8D}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShenmueDKSharp", "ShenmueDKSharp_Public\ShenmueDKSharp.csproj", "{68CA6FDA-E029-4247-9229-C3A75DFA9F8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94439CAC-B626-496A-BD89-40875C77A548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94439CAC-B626-496A-BD89-40875C77A548}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94439CAC-B626-496A-BD89-40875C77A548}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94439CAC-B626-496A-BD89-40875C77A548}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68CA6FDA-E029-4247-9229-C3A75DFA9F8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68CA6FDA-E029-4247-9229-C3A75DFA9F8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68CA6FDA-E029-4247-9229-C3A75DFA9F8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68CA6FDA-E029-4247-9229-C3A75DFA9F8D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {302CEC31-80E1-4ACD-8D3D-88EDFFD35C4B}
+	EndGlobalSection
+EndGlobal

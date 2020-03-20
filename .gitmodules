@@ -1,0 +1,3 @@
+[submodule "ShenmueDKSharp"]
+	path = ShenmueDKSharp_Public
+	url = ../../Shenmue-Mods/ShenmueDKSharp.git
