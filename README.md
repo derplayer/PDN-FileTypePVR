@@ -13,8 +13,8 @@ Download the latest [Release.zip](https://github.com/derplayer/PDN-FileTypePVR/r
 Just delete all the files you have copied over.
 
 ## About source code
-* Project Solution: Visual Studio 2017
-* Tested under: Paint.NET 4.2.8
+* Project Solution: Visual Studio 2019
+* Tested under: Paint.NET 4.2.16 (last .NET Framework 4 version), Paint.NET 4.3.7 (.NET 6)
 
 ![Alt text](https://i.imgur.com/TeNuzfH.png "PVR Plugin Save Screenshot from v1.0")
 

@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Resources/ProgramIcon.ico</ApplicationIcon>
+    <AssemblyName>PuyoTools</AssemblyName>
+    <VersionPrefix>3.0.0</VersionPrefix>
+    <VersionSuffix>dev</VersionSuffix>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FormatWith" Version="3.0.1" />
+    <PackageReference Include="Ookii.Dialogs.WinForms" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PuyoTools.Core\PuyoTools.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Formats\Archives\WriterSettings\AcxWriterSettings.cs" />
+    <Compile Update="Formats\Archives\WriterSettings\AfsWriterSettings.cs" />
+    <Compile Update="Formats\Archives\WriterSettings\PvmWriterSettings.cs" />
+    <Compile Update="Formats\Archives\WriterSettings\SntWriterSettings.cs" />
+    <Compile Update="Formats\Textures\WriterSettings\GimWriterSettings.cs" />
+    <Compile Update="Formats\Textures\WriterSettings\GvrWriterSettings.cs" />
+    <Compile Update="Formats\Textures\WriterSettings\PvrWriterSettings.cs" />
+    <Compile Update="Formats\Textures\WriterSettings\SvrWriterSettings.cs" />
+    <Compile Update="GUI\AboutPuyoTools.cs" />
+    <Compile Update="GUI\MainWindow.cs" />
+    <Compile Update="GUI\ModuleSettingsControl.cs" />
+    <Compile Update="IconResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IconResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="BitmapResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BitmapResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="IconResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IconResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="BitmapResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BitmapResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Import Project="..\PuyoTools.App.Shared\PuyoTools.App.Shared.projitems" Label="Shared" />
+
+</Project>

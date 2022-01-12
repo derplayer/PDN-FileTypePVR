@@ -9,6 +9,9 @@
 *.userosscache
 *.sln.docstates
 
+# PVR
+PDN/FileTypes/PvrFiletype.dll
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
