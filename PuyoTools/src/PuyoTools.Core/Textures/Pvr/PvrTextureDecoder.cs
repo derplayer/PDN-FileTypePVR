@@ -317,6 +317,16 @@ namespace PuyoTools.Core.Textures.Pvr
             image.Save(destination, new PngEncoder());
         }
 
+        /// <summary>
+        /// Get loaded ImageSharp-typed image
+        /// </summary>
+        /// <param name="destination">The stream to save the texture to.</param>
+        public Image GetImage()
+        {
+            Image image = Image.LoadPixelData<Bgra32>(GetPixelData(), Width, Height);
+            return image;
+        }
+
         // Decodes a texture
         private byte[] DecodeTexture()
         {
