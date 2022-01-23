@@ -11,6 +11,8 @@
 
 # PVR
 PDN/FileTypes/PvrFiletype.dll
+PDN/FileTypes/
+!PDN/FileTypes/DUMMY
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -22,6 +24,8 @@ PDN/FileTypes/PvrFiletype.dll
 [Rr]eleases/
 x64/
 x86/
+!PDN/Native/x64/
+!PDN/Native/x86/
 bld/
 [Bb]in/
 [Oo]bj/

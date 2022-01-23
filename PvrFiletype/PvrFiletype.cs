@@ -12,6 +12,9 @@ using PuyoTools.Core;
 using PaintDotNet.IO;
 using System.Windows.Forms;
 using PuyoTools.Core.Textures.Pvr;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp;
+using System.Drawing;
 
 namespace PdnPvrFiletype
 {
@@ -25,6 +28,7 @@ namespace PdnPvrFiletype
         }
 
         public static PvrEngineEnum LoadEngineMode { get; set; } = PvrEngineEnum.None;
+        public static SaveDialogSettingsState pvrMetaDataCache;
 
         public PvrFiletype()
             : base("SEGA Dreamcast PVR file",
@@ -40,7 +44,11 @@ namespace PdnPvrFiletype
 
         protected override Document OnLoad(Stream input)
         {
-            if(LoadEngineMode == PvrEngineEnum.None)
+            // reset settings cache on fresh loaded files
+            pvrMetaDataCache = null;
+
+            // Setup loading engine
+            if (LoadEngineMode == PvrEngineEnum.None)
                 ShowLoadSetupDialogBox();
 
             if (LoadEngineMode == PvrEngineEnum.PuyoTools)
@@ -66,79 +74,120 @@ namespace PdnPvrFiletype
         {
             RenderArgs ra = new RenderArgs(new Surface(input.Size));
             input.Render(ra, true);
-            var test = token.ToString();
 
             // Show dialog and setup engine parameters
             SaveDialogSettingsState pvrMetaData;
 
-            if (LoadEngineMode == PvrEngineEnum.PuyoTools)
-                pvrMetaData = ShowSetupDialogBox(loadedPvr);
-            else
-                pvrMetaData = ShowSetupDialogBox(loadedPvrPuyo);
-
+            if (pvrMetaDataCache != null) 
+                pvrMetaData = ShowSetupDialogBox(pvrMetaDataCache, ra.Bitmap); //load from cache when there
+            else { // no cache make clear instance of settings dialog
+                switch (LoadEngineMode)
+                {
+                    case PvrEngineEnum.None:
+                        pvrMetaData = ShowSetupDialogBox(loadedPvrPuyo, ra.Bitmap); //null
+                        break;
+                    case PvrEngineEnum.ShenmueDK:
+                        pvrMetaData = ShowSetupDialogBox(loadedPvr, ra.Bitmap);
+                        break;
+                    case PvrEngineEnum.PuyoTools:
+                        pvrMetaData = ShowSetupDialogBox(loadedPvrPuyo, ra.Bitmap);
+                        break;
+                    default:
+                        pvrMetaData = ShowSetupDialogBox(loadedPvrPuyo, ra.Bitmap); //null
+                        break;
+                }
+            }
             using (var ms = new MemoryStream())
             {
-                if (pvrMetaData.SaveEngineMode == PvrEnginePublic.PuyoTools)
-                {
-                    using (var ms1 = new MemoryStream())
-                    {
-                        //HACK: convert to PNG memorystream (the only thing thats accepted by puyotools)
-                        ra.Bitmap.Save(ms1, System.Drawing.Imaging.ImageFormat.Png);
+                Image<Bgra32> image = ImageSharpExtensions.ToImageSharpImage(ra.Bitmap);
+                var tmpPvrPuyo = new PvrTextureEncoder(image, pvrMetaData.PuyoPixelFormat, (PvrDataFormat)pvrMetaData.PuyoDataFormat);
+                
+                // optiona global id
+                if(pvrMetaData.GbixId != null)
+                    tmpPvrPuyo.GlobalIndex = pvrMetaData.GbixId;
 
-                        var tmpPvrPuyo = new PvrTextureEncoder(ms1, pvrMetaData.PuyoPixelFormat, pvrMetaData.PuyoDataFormat);
-                        tmpPvrPuyo.Save(ms);
-                    }
-                }
-                else
-                {
-                    PVRT tmpPvr = new PVRT(new BMP(ra.Bitmap));
-                    tmpPvr.CompressionFormat = pvrMetaData.ShenDKCompressionFormat;
-                    tmpPvr.PixelFormat = pvrMetaData.ShenDKPixelFormat;
-                    tmpPvr.DataFormat = pvrMetaData.ShenDKDataFormat;
+                // dithering
+                tmpPvrPuyo.DitheringMode = pvrMetaData.Dithering;
 
-                    //GuardedStream workaround (forums.getpaint.net/topic/114912-i-can-not-save-my-work/)
-                    tmpPvr.Write(ms);
-                }
+                // EyeWeightMode
+                if (pvrMetaData.EyeWeightMode) tmpPvrPuyo.MetricMode = 1;
+                else tmpPvrPuyo.MetricMode = 0;
 
-                byte[] tmpBfr = ms.ToArray(); 
+                //GuardedStream workaround (forums.getpaint.net/topic/114912-i-can-not-save-my-work/)?
+                tmpPvrPuyo.Save(ms);
+
+                byte[] tmpBfr = ms.ToArray();
                 output.Write(tmpBfr, 0, tmpBfr.Length);
+                pvrMetaDataCache = pvrMetaData; // update settings cache
             }
-
         }
 
-        public SaveDialogSettingsState ShowSetupDialogBox(PvrTextureDecoder puyoPvr)
+        public SaveDialogSettingsState ShowSetupDialogBox(SaveDialogSettingsState cache, Bitmap preview)
+        {
+            SaveDialogSettings setupDlg = new SaveDialogSettings(cache);
+
+            setupDlg._img = preview;
+            setupDlg.ShowDialog();
+            setupDlg.Dispose();
+
+            SaveDialogSettingsState info = setupDlg._state;
+            return info;
+        }
+
+        public SaveDialogSettingsState ShowSetupDialogBox(PvrTextureDecoder puyoPvr, Bitmap preview)
         {
             SaveDialogSettings setupDlg;
 
             if (puyoPvr != null)
-                setupDlg = new SaveDialogSettings(puyoPvr.CompressionFormat, puyoPvr.DataFormat, puyoPvr.PixelFormat);
+                setupDlg = new SaveDialogSettings((PvrDataFormatEncodeOnly)puyoPvr.DataFormat, puyoPvr.PixelFormat, true, puyoPvr.GlobalIndex);
             else
-                setupDlg = new SaveDialogSettings(PuyoTools.Core.Textures.Pvr.PvrCompressionFormat.None,
-                    PuyoTools.Core.Textures.Pvr.PvrDataFormat.Vq,
-                    PuyoTools.Core.Textures.Pvr.PvrPixelFormat.Argb1555); //default when no file
+                setupDlg = new SaveDialogSettings(PvrDataFormatEncodeOnly.Vq, PvrPixelFormat.Argb1555, false, null); //default when no file
 
-            SaveDialogSettingsState info = setupDlg._state;
+            setupDlg._img = preview;
             setupDlg.ShowDialog();
             setupDlg.Dispose();
 
+            SaveDialogSettingsState info = setupDlg._state;
             return info;
         }
 
-        public SaveDialogSettingsState ShowSetupDialogBox(PVRT shendkPvr)
+        public SaveDialogSettingsState ShowSetupDialogBox(PVRT shendkPvr, Bitmap preview)
         {
             SaveDialogSettings setupDlg;
 
-            if(shendkPvr != null)
-                setupDlg = new SaveDialogSettings(shendkPvr.CompressionFormat, shendkPvr.DataFormat, shendkPvr.PixelFormat);
-            else
-                setupDlg = new SaveDialogSettings(ShenmueDKSharp.Files.Images._PVRT.PvrCompressionFormat.NONE,
-                    ShenmueDKSharp.Files.Images._PVRT.PvrDataFormat.VECTOR_QUANTIZATION,
-                    ShenmueDKSharp.Files.Images._PVRT.PvrPixelFormat.ARGB1555); //default when no file
+            uint? gbixCase = null;
 
-            SaveDialogSettingsState info = setupDlg._state;
+            try
+            {
+                // Who was so smart to report a empty gbix over HasGlobalIndex in ShenmueDK as true
+                // when there is none in file...  oh right that was me
+                // TODO: fix it in ShenmueDKSharp...
+                if (shendkPvr.GlobalIndex[0] != 0x00 || shendkPvr.GlobalIndex[1] != 0x00 ||
+                    shendkPvr.GlobalIndex[2] != 0x00 || shendkPvr.GlobalIndex[3] != 0x00)
+                {
+                    gbixCase = BitConverter.ToUInt32(new byte[]{
+                        shendkPvr.GlobalIndex[0], shendkPvr.GlobalIndex[1], shendkPvr.GlobalIndex[2], shendkPvr.GlobalIndex[3],
+                    }, 0);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("ShenmueDK could not parse the GBIX ID. Please enter your own or use PuyoTools Load engine."
+                    + Environment.NewLine + e );
+            }
+
+            if (shendkPvr != null)
+                setupDlg = new SaveDialogSettings(shendkPvr.DataFormat, shendkPvr.PixelFormat, true, gbixCase);
+            else
+                setupDlg = new SaveDialogSettings(
+                    ShenmueDKSharp.Files.Images._PVRT.PvrDataFormat.VECTOR_QUANTIZATION,
+                    ShenmueDKSharp.Files.Images._PVRT.PvrPixelFormat.ARGB1555, false, null); //default when no file
+
+            setupDlg._img = preview;
             setupDlg.ShowDialog();
             setupDlg.Dispose();
 
+            SaveDialogSettingsState info = setupDlg._state;
             return info;
         }
 

@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\ILRepack.2.0.18\build\ILRepack.props" Condition="Exists('..\packages\ILRepack.2.0.18\build\ILRepack.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -41,9 +40,6 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AssimpNet, Version=4.1.0.0, Culture=neutral, PublicKeyToken=0d51b391f59f42a6, processorArchitecture=MSIL">
-      <HintPath>..\packages\AssimpNet.4.1.0\lib\net40\AssimpNet.dll</HintPath>
-    </Reference>
     <Reference Include="PaintDotNet.Base">
       <HintPath>..\PDN\PaintDotNet.Base.dll</HintPath>
       <Private>False</Private>
@@ -55,34 +51,22 @@
       <HintPath>..\PDN\PaintDotNet.Data.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SixLabors.ImageSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13, processorArchitecture=MSIL">
-      <HintPath>..\packages\SixLabors.ImageSharp.1.0.4\lib\net472\SixLabors.ImageSharp.dll</HintPath>
+    <Reference Include="PuyoTools.Core">
+      <HintPath>..\PuyoTools\PuyoTools.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Drawing.Common.4.5.1\lib\net461\System.Drawing.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="VQCLRDLL">
+      <HintPath>costura64\VQCLRDLL.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ImageSharpExtensions.cs" />
@@ -92,9 +76,13 @@
     <Compile Include="OpenDialogSettings.Designer.cs">
       <DependentUpon>OpenDialogSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="PvrFiletype.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PVRTPublicTypes.cs" />
     <Compile Include="SaveDialogSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,13 +92,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PuyoTools\src\PuyoTools.Core\PuyoTools.Core.csproj">
-      <Project>{b4321103-51ba-4c88-a36e-113762982b58}</Project>
-      <Name>PuyoTools.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ShenmueDKSharp_Public\ShenmueDKSharp.csproj">
       <Project>{68ca6fda-e029-4247-9229-c3a75dfa9f8d}</Project>
       <Name>ShenmueDKSharp</Name>
@@ -120,9 +103,30 @@
     <EmbeddedResource Include="OpenDialogSettings.resx">
       <DependentUpon>OpenDialogSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="SaveDialogSettings.resx">
       <DependentUpon>SaveDialogSettings.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AssimpNet">
+      <Version>4.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Costura.Fody">
+      <Version>4.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="ILRepack">
+      <Version>2.0.18</Version>
+    </PackageReference>
+    <PackageReference Include="SixLabors.ImageSharp">
+      <Version>1.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="System.Drawing.Common">
+      <Version>4.5.1</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -130,38 +134,10 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-    <ItemGroup>
-      <MergeAssemblies Include="$(OutputPath)\PdnPvrFiletype.dll" />
-      <MergeAssemblies Include="$(OutputPath)\ShenmueDKSharp.dll" />
-      <MergeAssemblies Include="$(OutputPath)\PuyoTools.Core.dll" />
-      <MergeAssemblies Include="$(OutputPath)\SixLabors.ImageSharp.dll" />
-      <MergeAssemblies Include="$(OutputPath)\System.Drawing.Common.dll" />
-      <MergeAssemblies Include="$(OutputPath)\System.Numerics.Vectors.dll" />
-      <MergeAssemblies Include="$(OutputPath)\AssimpNet.dll" />
-    </ItemGroup>
-    <PropertyGroup>
-      <OutputAssembly>$(OutputPath)\PvrFiletype.dll</OutputAssembly>
-      <Merger>"$(SolutionDir)\packages\ILRepack.2.0.18\tools\ILRepack.exe"</Merger>
-      <!--<DebuggerCopy>copy "$(OutputAssembly)" "C:\Program Files\paint.net\FileTypes"</DebuggerCopy>-->
-      <DebuggerCopy>copy "$(OutputAssembly)" "$(ProjectDir)..\PDN\FileTypes\"</DebuggerCopy>
-    </PropertyGroup>
-    <Message Text="MERGING: @(MergeAssemblies->'%(Filename)') into $(OutputAssembly)" Importance="High" />
-    <Exec Command="$(Merger) /out:&quot;$(OutputAssembly)&quot; @(MergeAssemblies->'&quot;%(FullPath)&quot;', ' ') &amp;&amp; $(DebuggerCopy)" />
-    <Delete Files="@(MergeAssemblies)" />
-    <!-- Note that this does not delete the .pdb files but it seems to be the best I can do for now -->
-  </Target>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\AssimpNet.4.1.0\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AssimpNet.4.1.0\build\AssimpNet.targets'))" />
-    <Error Condition="!Exists('..\packages\ILRepack.2.0.18\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.2.0.18\build\ILRepack.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)$(OutputPath)PdnPvrFiletype.dll" "$(ProjectDir)..\PDN\FileTypes\PdnPvrFiletype.dll"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\AssimpNet.4.1.0\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.4.1.0\build\AssimpNet.targets')" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
